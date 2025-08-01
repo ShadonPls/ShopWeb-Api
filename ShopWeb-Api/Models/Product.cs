@@ -7,9 +7,9 @@
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
-        public DateTime CreatedAt {  get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<CartItem> CartItems { get; set; }
-        public ICollection<CategoryProduct> Categories { get; set; }
+        public ICollection<CategoryProduct> Categories { get; set; } = new List<CategoryProduct>();
         public ICollection<OrderItem> OrderItems { get; set; }
     }
 }

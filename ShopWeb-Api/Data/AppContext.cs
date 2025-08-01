@@ -13,6 +13,8 @@ namespace ShopWeb_Api.Data
         public DbSet<Category> Categorys { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<RoleUser> RoleUsers { get; set; }
+        public DbSet<CategoryProduct> CategoryProducts { get; set; }
         
         public AppContext(DbContextOptions options): base(options)
         {
@@ -94,7 +96,7 @@ namespace ShopWeb_Api.Data
                     .HasForeignKey(ci => ci.CartId);
 
                 entity.HasOne(ci => ci.Product)
-                    .WithMany()
+                    .WithMany(o=>o.CartItems)
                     .HasForeignKey(ci => ci.ProductId);
             });
 
@@ -121,7 +123,7 @@ namespace ShopWeb_Api.Data
                     .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(oi => oi.Product)
-                    .WithMany()
+                    .WithMany(o=>o.OrderItems)
                     .HasForeignKey(oi => oi.ProductId);
             });
         }
