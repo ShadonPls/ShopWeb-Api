@@ -71,6 +71,7 @@ namespace ShopWeb_Api.Services
             else
                 role = "User";
             var token = GenerateJwtToken(user, role);
+
             _logger.LogInformation($"Успешный вход пользователя: {user.Login}");
             return token;
         }

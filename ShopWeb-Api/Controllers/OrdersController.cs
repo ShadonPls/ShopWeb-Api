@@ -41,6 +41,8 @@ namespace ShopWeb_Api.Controllers
         public async Task<IActionResult> GetOrderById(int id)
         {
             var orders = await _orderService.GetOrderByIdAsync(id);
+            if(orders == null)
+                return Conflict($"Не найден продукт по введенному Id {id}");
             return Ok(orders);
         }
 

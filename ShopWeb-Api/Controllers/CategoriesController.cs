@@ -36,6 +36,8 @@ namespace ShopWeb_Api.Controllers
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] CreateCategoryDTO categoryDto)
         {
             var category = await _categoryService.UpdateCategoryAsync(id, categoryDto);
+            if(category == null)
+                return Conflict("Неправильно введен айди категории для изменения");
             return Ok(category);
         }
 

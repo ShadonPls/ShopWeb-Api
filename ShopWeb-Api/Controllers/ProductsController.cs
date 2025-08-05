@@ -27,6 +27,8 @@ namespace ShopWeb_Api.Controllers
         public async Task<IActionResult> GetProduct(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
+            if(product== null)
+                return Conflict($"Не найден продукт по введенному Id {id}");
             return Ok(product);
         }
 

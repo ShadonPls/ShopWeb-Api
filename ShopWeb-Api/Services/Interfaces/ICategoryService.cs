@@ -1,4 +1,5 @@
-﻿using ShopWeb_Api.Models.DTO.Category;
+﻿using ShopWeb_Api.Models;
+using ShopWeb_Api.Models.DTO.Category;
 
 namespace ShopWeb_Api.Services.Interfaces
 {
@@ -7,6 +8,6 @@ namespace ShopWeb_Api.Services.Interfaces
             Task<List<CategoryDTO>> GetAllCategoriesAsync();
             Task<CategoryDTO> CreateCategoryAsync(CreateCategoryDTO categoryDto);
             Task<CategoryDTO> UpdateCategoryAsync(int id, CreateCategoryDTO categoryDto);
-            Task DeleteCategoryAsync(int id);
+            Task<OperationResult> DeleteCategoryAsync(int id);
         }
 }

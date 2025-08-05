@@ -14,11 +14,13 @@ namespace ShopWeb_Api.Services
     {
         private readonly Data.AppContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProductService> _logger;
 
-        public ProductService(Data.AppContext context, IMapper mapper)
+        public ProductService(Data.AppContext context, IMapper mapper, ILogger<ProductService> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ProductResponseDTO> GetProductByIdAsync(int id)
@@ -28,8 +30,14 @@ namespace ShopWeb_Api.Services
                 .ThenInclude(cp => cp.Category)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (product == null) throw new KeyNotFoundException("Product not found");
+            if (product == null)
+            {
+                var errorMessage = $"Категория по данному ID {id} не найден";
+                _logger.LogWarning(errorMessage);
+                return null;
+            }
 
+            _logger.LogInformation($"Категория по ID {id} успешно получена");
             return _mapper.Map<ProductResponseDTO>(product);
         }
 
@@ -49,20 +57,24 @@ namespace ShopWeb_Api.Services
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation($"Категория успешно создана");
             return _mapper.Map<ProductResponseDTO>(product);
         }
-        public async Task UpdateProductAsync(int id, UpdateProductDTO productDto)
+        public async Task<OperationResult> UpdateProductAsync(int id, UpdateProductDTO productDto)
         {
             var product = await _context.Products
                 .Include(p => p.Categories)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
-                throw new KeyNotFoundException("Product not found");
+            {
+                var errorMessage = $"Продукт по данному ID {id} не найден";
+                _logger.LogWarning(errorMessage);
+                return OperationResult.Failure(errorMessage);
+            }
 
             _mapper.Map(productDto, product);
 
-            // Обновляем категории (если переданы)
             if (productDto.CategoryIds != null)
             {
                 product.Categories.Clear();
@@ -73,16 +85,26 @@ namespace ShopWeb_Api.Services
             }
 
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Категория успешно изменена");
+            return OperationResult.Success();
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task<OperationResult> DeleteProductAsync(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
-                throw new KeyNotFoundException("Product not found");
+            {
+                var errorMessage = $"Продукт по данному ID {id} не найден";
+                _logger.LogWarning(errorMessage);
+                return OperationResult.Failure(errorMessage);
+            }
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Категория успешно удалена");
+            return OperationResult.Success();
         }
     }
 }

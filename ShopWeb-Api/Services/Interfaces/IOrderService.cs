@@ -1,4 +1,5 @@
-﻿using ShopWeb_Api.Models.DTO.Order;
+﻿using ShopWeb_Api.Models;
+using ShopWeb_Api.Models.DTO.Order;
 
 namespace ShopWeb_Api.Services.Interfaces
 {
@@ -7,6 +8,6 @@ namespace ShopWeb_Api.Services.Interfaces
         Task<OrderResponseDTO> GetOrderByIdAsync(int id);
         Task<List<OrderResponseDTO>> GetUserOrdersAsync(int userId);
         Task<OrderResponseDTO> CreateOrderFromCartAsync(int userId);
-        Task UpdateOrderStatusAsync(int orderId, string status);
+        Task<OperationResult> UpdateOrderStatusAsync(int orderId, string status);
     }
 }

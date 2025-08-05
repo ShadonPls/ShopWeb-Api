@@ -1,4 +1,5 @@
-﻿using ShopWeb_Api.Models.DTO.Product;
+﻿using ShopWeb_Api.Models;
+using ShopWeb_Api.Models.DTO.Product;
 
 namespace ShopWeb_Api.Services.Interfaces
 {
@@ -7,7 +8,7 @@ namespace ShopWeb_Api.Services.Interfaces
         Task<ProductResponseDTO> GetProductByIdAsync(int id);
         Task<List<ProductResponseDTO>> GetAllProductsAsync();
         Task<ProductResponseDTO> CreateProductAsync(CreateProductDTO productDto);
-        Task UpdateProductAsync(int id, UpdateProductDTO productDto);
-        Task DeleteProductAsync(int id);
+        Task<OperationResult> UpdateProductAsync(int id, UpdateProductDTO productDto);
+        Task<OperationResult> DeleteProductAsync(int id);
     }
 }

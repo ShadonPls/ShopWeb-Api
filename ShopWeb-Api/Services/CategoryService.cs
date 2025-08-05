@@ -10,11 +10,13 @@ namespace ShopWeb_Api.Services
     {
         private readonly Data.AppContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<CategoryService> _logger;
 
-        public CategoryService(Data.AppContext context, IMapper mapper)
+        public CategoryService(Data.AppContext context, IMapper mapper, ILogger<CategoryService> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<List<CategoryDTO>> GetAllCategoriesAsync()
@@ -28,6 +30,8 @@ namespace ShopWeb_Api.Services
             var category = _mapper.Map<Category>(categoryDto);
             _context.Categorys.Add(category);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Категория успешно создана");
             return _mapper.Map<CategoryDTO>(category);
         }
 
@@ -35,27 +39,36 @@ namespace ShopWeb_Api.Services
         {
             var category = await _context.Categorys.FindAsync(id);
             if (category == null)
-                throw new KeyNotFoundException("Category not found");
+            {
+                _logger.LogWarning($"Корзина не найдена");
+                return null;
+            }
 
             category.Name = categoryDto.Name;
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Категория успешно изменена");
             return _mapper.Map<CategoryDTO>(category);
         }
 
-        public async Task DeleteCategoryAsync(int id)
+        public async Task<OperationResult> DeleteCategoryAsync(int id)
         {
             var category = await _context.Categorys
                 .Include(c => c.Products)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (category == null)
-                throw new KeyNotFoundException("Category not found");
-
-            if (category.Products.Any())
-                throw new InvalidOperationException("Cannot delete category with linked products");
+            {
+                string errorMessage = $"Категория с ID {id} не найден";
+                _logger.LogWarning(errorMessage);
+                return OperationResult.Failure(errorMessage);
+            }
 
             _context.Categorys.Remove(category);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Категория успешно удалена");
+            return OperationResult.Success();
         }
     }
 }

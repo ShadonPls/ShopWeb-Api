@@ -31,14 +31,23 @@ namespace ShopWeb_Api.Controllers
         public async Task<IActionResult> AddItemToCart([FromBody] AddCartItemDTO itemDto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _cartService.AddItemToCartAsync(userId, itemDto);
+            var result = await _cartService.AddItemToCartAsync(userId, itemDto);
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+
             return Ok();
         }
 
         [HttpDelete("items/{itemId}")]
         public async Task<IActionResult> RemoveItemFromCart(int itemId)
         {
-            await _cartService.RemoveItemFromCartAsync(itemId);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _cartService.RemoveItemFromCartAsync(userId, itemId);
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+
             return NoContent();
         }
 
@@ -46,7 +55,11 @@ namespace ShopWeb_Api.Controllers
         public async Task<IActionResult> ClearCart()
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _cartService.ClearCartAsync(userId);
+            var result = await _cartService.ClearCartAsync(userId);
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+
             return NoContent();
         }
     }

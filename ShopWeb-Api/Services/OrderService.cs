@@ -11,12 +11,14 @@ namespace ShopWeb_Api.Services
         private readonly Data.AppContext _context;
         private readonly IMapper _mapper;
         private readonly ICartService _cartService;
+        private readonly ILogger<OrderService> _logger;
 
-        public OrderService(Data.AppContext context, IMapper mapper, ICartService cartService)
+        public OrderService(Data.AppContext context, IMapper mapper, ICartService cartService, ILogger<OrderService> logger)
         {
             _context = context;
             _mapper = mapper;
             _cartService = cartService;
+            _logger = logger;
         }
 
         public async Task<OrderResponseDTO> GetOrderByIdAsync(int id)
@@ -28,8 +30,12 @@ namespace ShopWeb_Api.Services
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
-                throw new KeyNotFoundException("Order not found");
+            {
+                _logger.LogWarning($"Заказ по данному ID {id} не найден");
+                return null;
+            }
 
+            _logger.LogInformation($"Заказ по ID {id} успешно получен");
             return _mapper.Map<OrderResponseDTO>(order);
         }
 
@@ -41,7 +47,11 @@ namespace ShopWeb_Api.Services
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
             if (cart == null || !cart.CartItems.Any())
-                throw new InvalidOperationException("Cart is empty");
+            {
+                var errorMessage = $"Заказ по данному ID {userId} не найден";
+                _logger.LogWarning(errorMessage);
+                return null;
+            }
 
             var order = new Order
             {
@@ -63,6 +73,7 @@ namespace ShopWeb_Api.Services
             await _cartService.ClearCartAsync(cart.Id);
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation($"Заказ успешно создан");
             return _mapper.Map<OrderResponseDTO>(order);
         }
 
@@ -76,14 +87,20 @@ namespace ShopWeb_Api.Services
             return _mapper.Map<List<OrderResponseDTO>>(orders);
         }
 
-        public async Task UpdateOrderStatusAsync(int orderId, string status)
+        public async Task<OperationResult> UpdateOrderStatusAsync(int orderId, string status)
         {
             var order = await _context.Orders.FindAsync(orderId);
             if (order == null)
-                throw new KeyNotFoundException("Order not found");
+            {
+                string errorMessage = $"Заказ с ID {orderId} не найден";
+                _logger.LogWarning(errorMessage);
+                return OperationResult.Failure(errorMessage);
+            }
 
             order.Status = status;
             await _context.SaveChangesAsync();
+
+            return OperationResult.Success();
         }
     }
 }
