@@ -5,9 +5,9 @@ namespace ShopWeb_Api.Services.Interfaces
 {
     public interface ICartService
     {
-        Task<CartResponseDTO> GetUserCartAsync(int userId);
-        Task<OperationResult> AddItemToCartAsync(int userId, AddCartItemDTO itemDto);
-        Task<OperationResult> RemoveItemFromCartAsync(int userId, int cartItemId);
-        Task<OperationResult> ClearCartAsync(int userId);
+        Task<CartResponseDTO> GetUserCartAsync(int userId, CancellationToken cancellationToken);
+        Task<OperationResult> AddItemToCartAsync(int userId, AddCartItemDTO itemDto, CancellationToken cancellationToken);
+        Task<OperationResult> RemoveItemFromCartAsync(int userId, int cartItemId, CancellationToken cancellationToken);
+        Task<OperationResult> ClearCartAsync(int userId, CancellationToken cancellationToken);
     }
 }

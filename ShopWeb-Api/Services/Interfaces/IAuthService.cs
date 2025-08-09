@@ -4,7 +4,7 @@ namespace ShopWeb_Api.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<UserResponseDTO> RegisterAsync(RegisterDTO registerDto);
-        Task<string> LoginAsync(LoginDTO loginDto);
+        Task<UserResponseDTO> RegisterAsync(RegisterDTO registerDto, CancellationToken cancellationToken);
+        Task<string> LoginAsync(LoginDTO loginDto, CancellationToken cancellationToken);
     }
 }

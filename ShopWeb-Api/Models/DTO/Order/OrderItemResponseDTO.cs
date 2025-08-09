@@ -1,6 +1,6 @@
 ﻿namespace ShopWeb_Api.Models.DTO.Order
 {
-    public class OrderItemDTO
+    public class OrderItemResponseDTO
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }

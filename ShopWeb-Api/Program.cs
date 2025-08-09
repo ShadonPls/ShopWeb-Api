@@ -7,6 +7,7 @@ using ShopWeb_Api.Services;
 using ShopWeb_Api.Services.Interfaces;
 using ShopWeb_Api.Services.Mapping;
 using ShopWeb_Api.Services.Middleware;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,13 +42,28 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddDbContext<ShopWeb_Api.Data.AppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICartService, CartService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddAutoMapper
+    (typeof(CartMappingProfile),
+    typeof(OrderMappingProfile),
+    typeof(ProductMappingProfile),
+    typeof(UserMappingProfile),
+    typeof(CategoryMappingProfile));
+
+var serviceTypes = Assembly.GetExecutingAssembly()
+    .GetTypes()
+    .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Service"));
+
+foreach (var serviceType in serviceTypes)
+{
+    var interfaceType = serviceType.GetInterfaces()
+        .FirstOrDefault(i => i.Name == $"I{serviceType.Name}");
+
+    if (interfaceType != null)
+    {
+        builder.Services.AddScoped(interfaceType, serviceType);
+    }
+}
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];

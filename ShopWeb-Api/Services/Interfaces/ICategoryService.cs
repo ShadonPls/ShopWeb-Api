@@ -5,9 +5,9 @@ namespace ShopWeb_Api.Services.Interfaces
 {
         public interface ICategoryService
         {
-            Task<List<CategoryDTO>> GetAllCategoriesAsync();
-            Task<CategoryDTO> CreateCategoryAsync(CreateCategoryDTO categoryDto);
-            Task<CategoryDTO> UpdateCategoryAsync(int id, CreateCategoryDTO categoryDto);
-            Task<OperationResult> DeleteCategoryAsync(int id);
+            Task<List<CategoryResponseDTO>> GetAllCategoriesAsync(CancellationToken cancellationToken);
+            Task<CategoryResponseDTO> CreateCategoryAsync(CreateCategoryDTO categoryDto, CancellationToken cancellationToken);
+            Task<CategoryResponseDTO> UpdateCategoryAsync(int id, CreateCategoryDTO categoryDto, CancellationToken cancellationToken);
+            Task<OperationResult> DeleteCategoryAsync(int id, CancellationToken cancellationToken);
         }
 }

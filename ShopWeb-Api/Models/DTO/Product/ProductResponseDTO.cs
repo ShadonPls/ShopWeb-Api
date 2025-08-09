@@ -10,6 +10,6 @@ namespace ShopWeb_Api.Models.DTO.Product
         public decimal Price { get; set; }
         public int Stock { get; set; }
         public DateTime CreatedAt { get; set; }
-        public List<CategoryDTO> Categories { get; set; } = new();
+        public List<CategoryResponseDTO> Categories { get; set; } = new();
     }
 }

@@ -5,10 +5,10 @@ namespace ShopWeb_Api.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<ProductResponseDTO> GetProductByIdAsync(int id);
-        Task<List<ProductResponseDTO>> GetAllProductsAsync();
-        Task<ProductResponseDTO> CreateProductAsync(CreateProductDTO productDto);
-        Task<OperationResult> UpdateProductAsync(int id, UpdateProductDTO productDto);
-        Task<OperationResult> DeleteProductAsync(int id);
+        Task<ProductResponseDTO> GetProductByIdAsync(int id, CancellationToken cancellationToken);
+        Task<List<ProductResponseDTO>> GetAllProductsAsync(CancellationToken cancellationToken);
+        Task<ProductResponseDTO> CreateProductAsync(CreateProductDTO productDto, CancellationToken cancellationToken);
+        Task<OperationResult> UpdateProductAsync(int id, UpdateProductDTO productDto, CancellationToken cancellationToken);
+        Task<OperationResult> DeleteProductAsync(int id, CancellationToken cancellationToken);
     }
 }

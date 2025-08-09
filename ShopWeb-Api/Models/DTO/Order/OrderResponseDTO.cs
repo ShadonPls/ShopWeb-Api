@@ -7,6 +7,6 @@
         public DateTime OrderDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public decimal TotalPrice { get; set; }
-        public List<OrderItemDTO> Items { get; set; } = new();
+        public List<OrderItemResponseDTO> Items { get; set; } = new();
     }
 }

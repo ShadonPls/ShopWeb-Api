@@ -1,6 +1,6 @@
 ﻿namespace ShopWeb_Api.Models.DTO.Cart
 {
-    public class CartItemDTO
+    public class CartItemResponseDTO
     {
         public int Id { get; set; }
         public int ProductId { get; set; }

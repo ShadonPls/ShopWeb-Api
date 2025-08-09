@@ -1,5 +1,6 @@
 ﻿namespace ShopWeb_Api.Models.DTO.User
 {
+
     public class UserResponseDTO
     {
         public int Id { get; set; }

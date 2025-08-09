@@ -5,9 +5,9 @@ namespace ShopWeb_Api.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task<OrderResponseDTO> GetOrderByIdAsync(int id);
-        Task<List<OrderResponseDTO>> GetUserOrdersAsync(int userId);
-        Task<OrderResponseDTO> CreateOrderFromCartAsync(int userId);
-        Task<OperationResult> UpdateOrderStatusAsync(int orderId, string status);
+        Task<OrderResponseDTO> GetOrderByIdAsync(int id, CancellationToken cancellationToken);
+        Task<List<OrderResponseDTO>> GetUserOrdersAsync(int userId, CancellationToken cancellationToken);
+        Task<OrderResponseDTO> CreateOrderFromCartAsync(int userId, CancellationToken cancellationToken);
+        Task<OperationResult> UpdateOrderStatusAsync(int orderId, string status, CancellationToken cancellationToken);
     }
 }
