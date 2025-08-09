@@ -86,21 +86,18 @@ namespace ShopWeb_Api.Services
         /// <returns>Результат операции (успех/ошибка)</returns>
         public async Task<OperationResult> DeleteCategoryAsync(int id, CancellationToken cancellationToken = default)
         {
-            var category = await _context.Categorys
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+            int deletedCount = await _context.Categorys
+                .Where(c => c.Id == id)
+                .ExecuteDeleteAsync(cancellationToken);
 
-            if (category == null)
+            if (deletedCount == 0)
             {
-                string errorMessage = $"Категория с ID {id} не найден";
+                string errorMessage = $"Категория с ID {id} не найдена";
                 _logger.LogWarning(errorMessage);
                 return OperationResult.Failure(errorMessage);
             }
 
-            _context.Categorys.Remove(category);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            _logger.LogInformation($"Категория успешно удалена");
+            _logger.LogInformation($"Категория с ID {id} успешно удалена");
             return OperationResult.Success();
         }
     }

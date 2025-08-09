@@ -43,12 +43,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<ShopWeb_Api.Data.AppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAutoMapper
-    (typeof(CartMappingProfile),
-    typeof(OrderMappingProfile),
-    typeof(ProductMappingProfile),
-    typeof(UserMappingProfile),
-    typeof(CategoryMappingProfile));
+builder.Services.AddAutoMapper(typeof(CartMappingProfile).Assembly);
 
 var serviceTypes = Assembly.GetExecutingAssembly()
     .GetTypes()
@@ -85,9 +80,9 @@ builder.Services.AddAuthentication(options =>
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
